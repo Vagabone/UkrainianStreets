@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Test View Controller</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+        function loadLocalities() {
+            var url = "/localities/";
+            if ($('#regionId').val() !== '') {
+                url = url + $('#regionId').val();
+            }
+            $("#localitiesId").load(url);
+            loadStreets();
+        }
+    </script>
+    <script>
+        function loadStreets() {
+            var url = "/streets/";
+            if ($('#localitiesId').val() !== '') {
+                url = url + $('#localitiesId').val();
+            }
+            $("#streetId").load(url);
+        }
+    </script>
+</head>
+<body>
+<main>
+    <div>
+        <div><span>Регіон</span></div>
+        <div>
+            <select name="regions" id="regionId" onchange="loadLocalities()">
+                <!--/*@thymesVar id="regionList" type="List<ua.skarb.ukrainianStreets.domain.Region>"*/-->
+                <!--/*@thymesVar id="region" type="ua.skarb.ukrainianStreets.domain.Region"*/-->
+                <option th:each="region : ${regionList}" th:value="${region.getId()}" th:text="${region.getName()}">
+                </option>
+            </select>
+        </div>
+        <div><span>Населений пункт</span></div>
+        <div>
+            <select name="localities" id="localitiesId" th:fragment="localitiesList" onchange="loadStreets()">
+                <!--/*@thymesVar id="localitiesList" type="List<ua.skarb.ukrainianStreets.domain.Locality>"*/-->
+                <!--/*@thymesVar id="locality" type="ua.skarb.ukrainianStreets.domain.Locality"*/-->
+                <option th:each="locality : ${localitiesList}" th:value="${locality.getId()}" th:text="${locality.getName()}+' '+${locality.getLocalityType()}+' '+${locality.getDistrict()!=null?'('+locality.getDistrict().getName()+')':''}"></option>
+            </select>
+        </div>
+        <div><span>Вулиці</span></div>
+        <div>
+            <select name="streets" id="streetId" th:fragment="streetsList">
+                <!--/*@thymesVar id="streetsList" type="List<ua.skarb.ukrainianStreets.domain.Street>"*/-->
+                <!--/*@thymesVar id="street" type="ua.skarb.ukrainianStreets.domain.Street"*/-->
+                <option th:each="street : ${streetsList}" th:value="${street.getId()}" th:text="${street.getName()}"></option>
+            </select>
+        </div>
+    </div>
+</main>
+</body>
+</html>
